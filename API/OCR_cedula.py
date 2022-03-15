@@ -51,22 +51,19 @@ def orderDataFront(Data):
         ):
             pos_name = i
             break
-
-    print(Data)
+    
 
     ## Si lee un numero y un nombre, realiza la operación de lectura y orden.
     if pos_name != None and pos_num != None:    
         # Corta los datos desde la posici´pm del numero de cedula hasta la posición del nombre     
         new_data = Data[pos_num + 1 : pos_name]
-        print(new_data)
+        
         # Proceso de filtro de palabras no deseadas o basura
         for word in words_to_filter:
             try:
                 new_data.remove(word)
             except:
                 continue
-        print(new_data) 
-
 
         # Determina la posición de la palabra "apellido" en los datos 
         for i in range(len(new_data)):
@@ -103,16 +100,13 @@ def orderDataFront(Data):
             new_data = Data[pos_num +1 : pos_lastname+2]  
         except:
             new_data = Data[pos_num +1 :]
-
-        print(new_data)
+        
         # Proceso de filtro de palabras no deseadas o basura
         for word in words_to_filter:
             try:
                 new_data.remove(word)
             except:
                 continue
-
-        print(new_data)  
         # Según los cortes y filtros realizados, el apellido siempre quedara como primera posición
         # y el nombre al final de la lista de datos
         orderData["Apellidos"] = new_data[0]

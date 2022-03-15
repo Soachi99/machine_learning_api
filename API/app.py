@@ -26,10 +26,8 @@ def uploader():
 
         
         files = request.files.getlist("files[]") 
-        id_client = request.form.get('id')
-        print(id_client)          
-        for file in files:
-            print(file)        
+        id_client = request.form.get('id')                  
+        for file in files:                   
             if count == 0:                
                 file.filename = "Front.jpg"  
             if file.filename == '':
@@ -91,6 +89,6 @@ def images_64_encode(id_client):
     return image_64_front, image_64_back
 
 if __name__ == '__main__':
-    app.run(debug = True, port=80)
+    app.run(debug = False, port=4000)
 
 
