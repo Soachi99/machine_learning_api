@@ -1,6 +1,5 @@
 import os, io
 import re
-from cv2 import threshold
 from google.cloud import vision
 
 
