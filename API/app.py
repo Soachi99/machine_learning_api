@@ -23,7 +23,6 @@ def uploader():
 
         if not os.path.exists(save_path):
             os.makedirs(save_path) 
-
         
         files = request.files.getlist("files[]") 
         id_client = request.form.get('id')                  
@@ -35,40 +34,49 @@ def uploader():
             if count >= 1:                
                 file.filename = "Back.jpg"
             file.save(os.path.join(app.config['UPLOAD_FOLDER'], file.filename))            
-            count += 1        
+            count += 1   
+
+        try: 
+            isFront, isBack  = CedulaDetection.detect(id_client)                           
+            if isFront != False or isBack != False: 
                 
-        isFront, isBack  = CedulaDetection.detect(id_client)                           
-        if isFront != False or isBack != False: 
-            
-            Data = OCR_cedula.scan(id_client)
-            if Data["success"] == False:
-                Data = {"success": False, "mensaje": "Error en el reconocimiento de caracteres, la imagen esta muy borrosa o de dificil lectura"}
-            else:
-                image_64_front, image_64_back = images_64_encode(id_client)                
-                if image_64_back != None:
-                    Data["Imagen Cedula Posterior"] = str(image_64_back)
-                if image_64_front != None:
-                    Data["Imagen Cedula Frontal"] = str(image_64_front)
+                Data = OCR_cedula.scan(id_client)
+                if Data["success"] == False:
+                    Data = {"success": False, "mensaje": "Error en el reconocimiento de caracteres, la imagen esta muy borrosa o de dificil lectura"}
+                    print(Data)
+                else:
+                    aux_data = Data
+                    print(aux_data)
+                    image_64_front, image_64_back = images_64_encode(id_client)                
+                    if image_64_back != None:
+                        Data["Imagen Cedula Posterior"] = str(image_64_back)
+                    if image_64_front != None:
+                        Data["Imagen Cedula Frontal"] = str(image_64_front)
+                     
 
-            if isFront == True and isBack == True:
-                try:
-                    os.remove(save_path + f'/cedula_frontal_{id_client}.jpg')
-                    os.remove(save_path + f'/cedula_posterior_{id_client}.jpg')
-                except:
-                    print("No existe imagen")
+                if isFront == True and isBack == True:
+                    try:
+                        os.remove(save_path + f'/cedula_frontal_{id_client}.jpg')
+                        os.remove(save_path + f'/cedula_posterior_{id_client}.jpg')
+                    except:
+                        print("No existe imagen")
 
-            if isFront == False and isBack == True:
-                try:                        
-                    os.remove(save_path + f'/cedula_posterior_{id_client}.jpg')
-                except:
-                    print("No existe imagen")
+                if isFront == False and isBack == True:
+                    try:                        
+                        os.remove(save_path + f'/cedula_posterior_{id_client}.jpg')
+                    except:
+                        print("No existe imagen")
+                
 
-
-        if isFront == False and isBack == False:  
+            if isFront == False and isBack == False:  
+                Data = {"success": False, "mensaje": "No se detecto una cédula en la imagen"}
+                print(Data) 
+               
+            return jsonify(Data)
+        except:
             Data = {"success": False, "mensaje": "No se detecto una cédula en la imagen"}
-
-        return jsonify(Data)
-       
+            print(Data)  
+            return jsonify(Data)
 
 def images_64_encode(id_client):
     image_64_front = None
