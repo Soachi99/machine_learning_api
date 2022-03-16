@@ -44,13 +44,11 @@ def uploader():
             if Data["success"] == False:
                 Data = {"success": False, "mensaje": "Error en el reconocimiento de caracteres, la imagen esta muy borrosa o de dificil lectura"}
             else:
-                image_64_front, image_64_back = images_64_encode(id_client)
-                ## storage_firebase.save_images(Data, images)
-
-            if image_64_back != None:
-                Data["Imagen Cedula Posterior"] = str(image_64_back)
-            if image_64_front != None:
-                Data["Imagen Cedula Frontal"] = str(image_64_front)
+                image_64_front, image_64_back = images_64_encode(id_client)                
+                if image_64_back != None:
+                    Data["Imagen Cedula Posterior"] = str(image_64_back)
+                if image_64_front != None:
+                    Data["Imagen Cedula Frontal"] = str(image_64_front)
 
             if isFront == True and isBack == True:
                 try:
