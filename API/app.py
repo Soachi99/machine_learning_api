@@ -5,6 +5,7 @@ from flask_cors import CORS
 import OCR_cedula
 import CedulaDetection
 import base64
+import logging
 
 save_path = 'static'
 app = Flask(__name__)
@@ -43,10 +44,10 @@ def uploader():
                 Data = OCR_cedula.scan(id_client)
                 if Data["success"] == False:
                     Data = {"success": False, "mensaje": "Error en el reconocimiento de caracteres, la imagen esta muy borrosa o de dificil lectura"}
-                    print(Data)
+                    logging.info(Data)
                 else:
                     aux_data = Data
-                    print(aux_data)
+                    logging.info(aux_data)
                     image_64_front, image_64_back = images_64_encode(id_client)                
                     if image_64_back != None:
                         Data["Imagen Cedula Posterior"] = str(image_64_back)
@@ -70,12 +71,12 @@ def uploader():
 
             if isFront == False and isBack == False:  
                 Data = {"success": False, "mensaje": "No se detecto una cédula en la imagen"}
-                print(Data) 
+                logging.info(Data) 
                
             return jsonify(Data)
         except:
             Data = {"success": False, "mensaje": "No se detecto una cédula en la imagen"}
-            print(Data)  
+            logging.info(Data)  
             return jsonify(Data)
 
 def images_64_encode(id_client):
