@@ -1,4 +1,3 @@
-from itertools import count
 import os
 import io
 from flask import Flask, jsonify, render_template, request
