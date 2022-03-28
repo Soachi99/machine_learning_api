@@ -102,7 +102,7 @@ def checkHistogram():
     img_check = cv2.imread(save_path + "/Front.jpg", 0)    
     hist = cv2.calcHist([img_check], [0], None, [256], [0, 256])  
 
-    underExposer = hist[0:50]
+    underExposer = hist[0:25]
     overExposer = hist[225:256]
 
     count_underExpose = 0
