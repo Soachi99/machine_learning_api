@@ -165,8 +165,7 @@ def images_64_encode(id_client):
      
     return image_64_front, image_64_back
 
-if __name__ == '__main__':
-    app.run(debug = False, port=80)
-    #app.run(debug = False, host="0.0.0.0", port=4000)
+if __name__ == '__main__':    
+    app.run(debug = False, host="0.0.0.0", port=4000)
 
 
