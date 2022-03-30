@@ -131,7 +131,7 @@ def save_detection(image_path, class_id, xmin, xmax, ymin, ymax, id_client):
       try:
         front = aux_image[ymin-25:ymax+25,xmin-20:xmax+20]  
       except:
-        front = aux_image[ymin-10:ymax+10,xmin-10:xmax+10]  
+        front = aux_image[ymin:ymax,xmin:xmax]  
       front = cv2.detailEnhance(front, sigma_s=10, sigma_r=0.10) 
       cv2.imwrite(save_path + f'/cedula_frontal_{id_client}.jpg', front)  
     
@@ -139,7 +139,7 @@ def save_detection(image_path, class_id, xmin, xmax, ymin, ymax, id_client):
       try:
         back = aux_image[ymin-25:ymax+25,xmin-20:xmax+20] 
       except:
-        back = aux_image[ymin-10:ymax+10,xmin-10:xmax+10] 
+        back = aux_image[ymin:ymax,xmin:xmax] 
       back = cv2.detailEnhance(back, sigma_s=10, sigma_r=0.10)
       cv2.imwrite(save_path + f'/cedula_posterior_{id_client}.jpg', back)    
 
@@ -162,7 +162,7 @@ def detect(id_client):
               input_image,
               interpreter,
               id_client,
-              threshold=0.3
+              threshold=0.2
           )
 
     # Luego del proceso de detección, se verifica las imagenes que se recortaron y si efectivamente se detecto 
