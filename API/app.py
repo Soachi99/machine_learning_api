@@ -37,7 +37,7 @@ def uploader():
                         logging.warning("Imagen borrosa o de dificil lectura") 
                     else:
                         aux_data = Data
-                        logging.info(aux_data)
+                        logging.warning(f"{id_client}, exitoso")
                         print(aux_data)
                         image_64_front, image_64_back = images_64_encode(id_client)                
                         if image_64_back != None:
@@ -126,6 +126,7 @@ def checkHistogram():
         data["success"] = False 
 
     if count_overExpose < 15 and count_underExpose < 10:
+        logging.warning("Exito, buena foto")
         data["mensaje"] = "Buena imagen"
         data["success"] = True
 
