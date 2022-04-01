@@ -96,14 +96,16 @@ def run_odt_and_draw_results(image_path, interpreter, id_client, threshold=0.5):
     classes_detected.append(class_id)
 
     # Clases detectadas, si detecto en la imagen la clase 4 (CEDULA)
-    if 4 in classes_detected:
+    if 1 in classes_detected:
       Front_detected = True
+      save_detection(image_path, class_id, xmin, xmax, ymin, ymax, id_client) 
     # Clases detectadas, si detecto en la imagen la clase 6 (ATRAS)
-    if 6 in classes_detected:
+    if 2 in classes_detected:
       Back_detected = True  
+      save_detection(image_path, class_id, xmin, xmax, ymin, ymax, id_client) 
     
     # Recorte de cada clase en la imagen y almacenamiento
-    save_detection(image_path, class_id, xmin, xmax, ymin, ymax, id_client)   
+      
 
   ############################# MUESTRA EN LA IMAGEN LOS OBJETOS DETECTADOS #################################  
 
@@ -126,16 +128,16 @@ def run_odt_and_draw_results(image_path, interpreter, id_client, threshold=0.5):
 def save_detection(image_path, class_id, xmin, xmax, ymin, ymax, id_client):      
     
     # Imagen auxiliar
-    aux_image = cv2.imread(image_path)    
+    aux_image = cv2.imread(image_path)           
     if(classes[class_id] == "CEDULA"):  
       try:
         front = aux_image[ymin-25:ymax+25,xmin-20:xmax+20]  
       except:
-        front = aux_image[ymin:ymax,xmin:xmax]  
+        front = aux_image[ymin:ymax,xmin:xmax]       
       front = cv2.detailEnhance(front, sigma_s=10, sigma_r=0.10) 
       cv2.imwrite(save_path + f'/cedula_frontal_{id_client}.jpg', front)  
     
-    if (classes[class_id] == "ATRAS") : 
+    if (classes[class_id] == "ATRAS"): 
       try:
         back = aux_image[ymin-25:ymax+25,xmin-20:xmax+20] 
       except:

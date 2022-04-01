@@ -30,7 +30,7 @@ def orderDataFront(Data):
         "Coldabia", "Acional", "Nacional", "Auca De Da", "Republica Ce", "Mb", "Rnpablicad", "Ta", "Olo", 
         "Olo K", "Republicade", "Colgmbia", "Col", "C Rublica De", "Cobombia", "Colombla", "Replblica De",
         "Lica De", "Repubee", "Repubea", "Repilicad", "Colombl", "Hacional", "Repueli", "Colommen", "Colomgia",
-        "Epublica De Colma", "Replibu", "Re", "Sia", "Rublic", "Pepublic", "Coloeia", 
+        "Epublica De Colma", "Replibu", "Re", "Sia", "Rublic", "Pepublic", "Coloeia", "Nůmero"
     ]
 
     ## Busca el numero de la cedula en los datos y quita los puntos
@@ -76,11 +76,14 @@ def orderDataFront(Data):
 
         # Según los cortes y filtros realizados, el apellido siempre quedara como primera posición
         # y el nombre luego de la plabra apellido, o en su defecto al final de la lista de datos
-        orderData["Apellidos"] = new_data[0]
-        try:
-            orderData["Nombres"] = new_data[pos_lastname + 1]
-        except:
-            orderData["Nombres"] = new_data[-1]
+        if(len(new_data)>0):
+            orderData["Apellidos"] = new_data[0]
+            try:
+                orderData["Nombres"] = new_data[pos_lastname + 1]
+            except:
+                orderData["Nombres"] = new_data[-1]
+        else:
+            return False
 
     ## Si determina la posición del numero, pero no la posición del nombre, realiza la operación de lectura y orden por la posición del apellido.
     if pos_num != None and pos_name == None:
@@ -108,8 +111,11 @@ def orderDataFront(Data):
                 continue
         # Según los cortes y filtros realizados, el apellido siempre quedara como primera posición
         # y el nombre al final de la lista de datos
-        orderData["Apellidos"] = new_data[0]
-        orderData["Nombres"] = new_data[-1]
+        if(len(new_data)>0):
+            orderData["Apellidos"] = new_data[0]
+            orderData["Nombres"] = new_data[-1]
+        else:
+            return False
 
     ## Retorna un False si no hayo en la cedula el numero o un nombre.
     if pos_num == None and pos_name == None:
@@ -145,9 +151,7 @@ def orderDataBack(Data):
         if len(backData["Estatura"]) == 3:
             Data.pop(i)
             break
-    backData["Estatura"] = str(float(backData["Estatura"]) / 100)
-    
-    print(Data)
+    backData["Estatura"] = str(float(backData["Estatura"]) / 100)  
 
     # Buscamos en los datos un patron de que siga la siguiente forma "19-MAY-2019"
     # para almacenarlos como las fechas de nacimiento y expedición 

@@ -27,7 +27,7 @@ def uploader():
         data_hist = checkHistogram()
 
         if data_hist['success'] == True:
-            try: 
+            try:
                 isFront, isBack  = CedulaDetection.detect(id_client)                           
                 if isFront != False or isBack != False: 
                     
@@ -37,8 +37,7 @@ def uploader():
                         logging.warning("Imagen borrosa o de dificil lectura") 
                     else:
                         aux_data = Data
-                        logging.warning(f"{id_client}, exitoso")
-                        print(aux_data)
+                        logging.warning(f"id:{id_client}, {aux_data}")                   
                         image_64_front, image_64_back = images_64_encode(id_client)                
                         if image_64_back != None:
                             Data["Imagen Cedula Posterior"] = str(image_64_back)
@@ -62,8 +61,8 @@ def uploader():
 
                 if isFront == False and isBack == False:  
                     Data = {"success": False, "mensaje": "No se detecto una cédula en la imagen"}
-                    logging.warning("No se detecto cédula") 
-                
+                    logging.warning("No se detecto cédula")  
+
                 return jsonify(Data)
             except:
                 Data = {"success": False, "mensaje": "No se detecto una cédula en la imagen"}
