@@ -33,7 +33,7 @@ def uploader():
                     
                     Data = OCR_cedula.scan(id_client)
                     if Data["success"] == False:
-                        Data = {"success": False, "mensaje": "Error en el reconocimiento de caracteres, la imagen esta muy borrosa o de dificil lectura"}
+                        Data = {"success": False, "mensaje": "Error en el reconocimiento de caracteres, la imagen está muy borrosa o de difícil lectura"}
                         logging.warning("Imagen borrosa o de dificil lectura") 
                     else:
                         aux_data = Data
@@ -60,13 +60,13 @@ def uploader():
                     
 
                 if isFront == False and isBack == False:  
-                    Data = {"success": False, "mensaje": "No se detecto una cédula en la imagen"}
-                    logging.warning("No se detecto cédula")  
+                    Data = {"success": False, "mensaje": "No se detectó una cédula en la imagen"}
+                    logging.warning("No se detectó cédula")  
 
                 return jsonify(Data)
             except:
-                Data = {"success": False, "mensaje": "No se detecto una cédula en la imagen"}
-                logging.warning("No se detecto cédula")  
+                Data = {"success": False, "mensaje": "No se detectó una cédula en la imagen"}
+                logging.warning("No se detectó cédula")  
                 return jsonify(Data)
         else:            
             return jsonify(data_hist)
@@ -110,8 +110,8 @@ def checkHistogram():
             count_underExpose += 1
 
     if count_underExpose >= 10: 
-        logging.warning("La imagen cuenta con poca iluminación, situese en un sitio mas iluminado para tomar la foto")  
-        data["mensaje"] = "La imagen cuenta con poca iluminación, situese en un sitio mas iluminado para tomar la foto"
+        logging.warning("La imagen cuenta con poca iluminación, sitúese en un sitio más iluminado para tomar la foto")  
+        data["mensaje"] = "La imagen cuenta con poca iluminación, sitúese en un sitio más iluminado para tomar la foto"
         data["success"] = False
 
     count_overExpose = 0
@@ -120,8 +120,8 @@ def checkHistogram():
             count_overExpose += 1
 
     if count_overExpose >= 15:  
-        logging.warning("La imagen cuenta con mucha iluminación, situese en un sitio menos iluminado para tomar la foto") 
-        data["mensaje"] = "La imagen cuenta con mucha iluminación, situese en un sitio menos iluminado para tomar la foto"
+        logging.warning("La imagen cuenta con mucha iluminación, sitúese en un sitio menos iluminado para tomar la foto") 
+        data["mensaje"] = "La imagen cuenta con mucha iluminación, sitúese en un sitio menos iluminado para tomar la foto"
         data["success"] = False 
 
     if count_overExpose < 15 and count_underExpose < 10:
