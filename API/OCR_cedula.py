@@ -215,6 +215,8 @@ def OCR_front(image):
     text = response.full_text_annotation.text
     data = text.split(sep="\n")    
     data = [each_string.title() for each_string in data]
+    if(len(data) <= 3):
+        return False
     # Orden y filtro de los datos
     frontData = orderDataFront(data)
     return frontData
@@ -228,7 +230,9 @@ def OCR_back(image):
     # Respuesta del OCR y separación de los datos
     text = response.full_text_annotation.text
     data = text.split(sep="\n")
-    data = [each_string.upper() for each_string in data]
+    data = [each_string.upper() for each_string in data]    
+    if(len(data) <= 3):
+        return False
     # Orden y filtro de los datos
     BackData = orderDataBack(data[:13])
     return BackData
