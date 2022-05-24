@@ -26,8 +26,8 @@ def uploader():
         savephoto()
         data_hist = checkHistogram()
 
-        if data_hist['success'] == True:
-            try:
+        if data_hist['success'] == True:  
+            try:          
                 isFront, isBack  = CedulaDetection.detect(id_client)                           
                 if isFront != False or isBack != False: 
                     
@@ -38,23 +38,27 @@ def uploader():
                     else:
                         aux_data = Data
                         logging.warning(f"id:{id_client}, {aux_data}")                   
-                        image_64_front, image_64_back = images_64_encode(id_client)                
+                        image_64_front, image_64_back, image_64_code = images_64_encode(id_client)                
                         if image_64_back != None:
                             Data["Imagen Cedula Posterior"] = str(image_64_back)
                         if image_64_front != None:
                             Data["Imagen Cedula Frontal"] = str(image_64_front)
+                        if image_64_code != None:
+                            Data["Imagen Codigo"] = str(image_64_code)
                         
 
                     if isFront == True and isBack == True:
                         try:
                             os.remove(save_path + f'/cedula_frontal_{id_client}.jpg')
                             os.remove(save_path + f'/cedula_posterior_{id_client}.jpg')
+                            os.remove(save_path + f'/codigo_{id_client}.jpg')  
                         except:
                             print("No existe imagen")
 
                     if isFront == False and isBack == True:
-                        try:                        
-                            os.remove(save_path + f'/cedula_posterior_{id_client}.jpg')
+                        try:    
+                            os.remove(save_path + f'/codigo_{id_client}.jpg')                    
+                            os.remove(save_path + f'/cedula_posterior_{id_client}.jpg')                        
                         except:
                             print("No existe imagen")
                     
@@ -65,9 +69,10 @@ def uploader():
 
                 return jsonify(Data)
             except:
-                Data = {"success": False, "mensaje": "No se detectó una cédula en la imagen"}
-                logging.warning("No se detectó cédula")  
+                Data = {"success": False, "mensaje": "No se puede procesar la cédula correctamente, tome la foto de nuevo"}
+                logging.warning("No se puede procesar la cédula correctamente")  
                 return jsonify(Data)
+            
         else:            
             return jsonify(data_hist)
 
@@ -106,7 +111,7 @@ def checkHistogram():
 
     count_underExpose = 0
     for i in range(len(underExposer)):
-        if underExposer[i] >= 10000:
+        if underExposer[i] >= 12000:
             count_underExpose += 1
 
     if count_underExpose >= 10: 
@@ -116,7 +121,7 @@ def checkHistogram():
 
     count_overExpose = 0
     for i in range(len(overExposer)):
-        if overExposer[i] >= 7500:
+        if overExposer[i] >= 10000:
             count_overExpose += 1
 
     if count_overExpose >= 15:  
@@ -152,6 +157,7 @@ def savephoto():
 def images_64_encode(id_client):
     image_64_front = None
     image_64_back = None
+    image_64_code = None
 
     files = os.listdir(save_path) 
 
@@ -162,8 +168,12 @@ def images_64_encode(id_client):
     if f"cedula_posterior_{id_client}.jpg" in files:
         with io.open(save_path + f'/cedula_posterior_{id_client}.jpg', "rb") as image_back:
             image_64_back = base64.b64encode(image_back.read())
+
+    if f"codigo_{id_client}.jpg" in files:
+        with io.open(save_path + f'/codigo_{id_client}.jpg', "rb") as image_code:
+            image_64_code = base64.b64encode(image_code.read())
      
-    return image_64_front, image_64_back
+    return image_64_front, image_64_back, image_64_code
 
 if __name__ == '__main__':    
     app.run(debug = False, host="0.0.0.0", port=4000)

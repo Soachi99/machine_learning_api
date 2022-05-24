@@ -96,13 +96,16 @@ def run_odt_and_draw_results(image_path, interpreter, id_client, threshold=0.5):
     classes_detected.append(class_id)
 
     # Clases detectadas, si detecto en la imagen la clase 4 (CEDULA)
-    if 1 in classes_detected:
+    if 2 in classes_detected:
       Front_detected = True
       save_detection(image_path, class_id, xmin, xmax, ymin, ymax, id_client) 
-    # Clases detectadas, si detecto en la imagen la clase 6 (ATRAS)
-    if 2 in classes_detected:
+    # Clases detectadas, si detecto en la imagen la clase 6 (ATRAS)  
+
+    if 3 and 1 in classes_detected:            
       Back_detected = True  
       save_detection(image_path, class_id, xmin, xmax, ymin, ymax, id_client) 
+
+    
     
     # Recorte de cada clase en la imagen y almacenamiento
       
@@ -127,13 +130,22 @@ def run_odt_and_draw_results(image_path, interpreter, id_client, threshold=0.5):
 # Función para recortar las partes detectadas por el modelo y almacenarlas
 def save_detection(image_path, class_id, xmin, xmax, ymin, ymax, id_client):      
     
-    # Imagen auxiliar
-    aux_image = cv2.imread(image_path)           
+        # Imagen auxiliar
+    aux_image = cv2.imread(image_path)  
+
+    if (classes[class_id] == "CODIGO"): 
+      try:
+        code = aux_image[ymin-20:ymax+20,xmin-20:xmax+20] 
+      except:
+        code = aux_image[ymin:ymax,xmin:xmax] 
+      code = cv2.detailEnhance(code, sigma_s=25, sigma_r=0.8)
+      cv2.imwrite(save_path + f'/codigo_{id_client}.jpg', code)  
+               
     if(classes[class_id] == "CEDULA"):  
       try:
         front = aux_image[ymin-25:ymax+25,xmin-20:xmax+20]  
       except:
-        front = aux_image[ymin:ymax,xmin:xmax]       
+        front = aux_image[ymin:ymax,xmin:xmax]               
       front = cv2.detailEnhance(front, sigma_s=10, sigma_r=0.10) 
       cv2.imwrite(save_path + f'/cedula_frontal_{id_client}.jpg', front)  
     
@@ -143,7 +155,9 @@ def save_detection(image_path, class_id, xmin, xmax, ymin, ymax, id_client):
       except:
         back = aux_image[ymin:ymax,xmin:xmax] 
       back = cv2.detailEnhance(back, sigma_s=10, sigma_r=0.10)
-      cv2.imwrite(save_path + f'/cedula_posterior_{id_client}.jpg', back)    
+      cv2.imwrite(save_path + f'/cedula_posterior_{id_client}.jpg', back)
+
+       
 
 def detect(id_client):
     # Carga el modelo y realiza su interpretación (Definición de tensors de entrada y salida)
