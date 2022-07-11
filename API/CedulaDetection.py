@@ -146,7 +146,7 @@ def save_detection(image_path, class_id, xmin, xmax, ymin, ymax, id_client):
         front = aux_image[ymin-25:ymax+25,xmin-20:xmax+20]  
       except:
         front = aux_image[ymin:ymax,xmin:xmax]               
-      front = cv2.detailEnhance(front, sigma_s=10, sigma_r=0.10) 
+      front = cv2.detailEnhance(front, sigma_s=20, sigma_r=0.8) 
       cv2.imwrite(save_path + f'/cedula_frontal_{id_client}.jpg', front)  
     
     if (classes[class_id] == "ATRAS"): 
@@ -154,7 +154,7 @@ def save_detection(image_path, class_id, xmin, xmax, ymin, ymax, id_client):
         back = aux_image[ymin-25:ymax+25,xmin-20:xmax+20] 
       except:
         back = aux_image[ymin:ymax,xmin:xmax] 
-      back = cv2.detailEnhance(back, sigma_s=10, sigma_r=0.10)
+      back = cv2.detailEnhance(back, sigma_s=20, sigma_r=0.8)
       cv2.imwrite(save_path + f'/cedula_posterior_{id_client}.jpg', back)
 
        
