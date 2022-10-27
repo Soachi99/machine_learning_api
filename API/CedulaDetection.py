@@ -190,7 +190,7 @@ def detect(id_client):
                 input_image,
                 interpreter,
                 id_client,
-                threshold=0.1
+                threshold=0.02
             )
 
     # Luego del proceso de detección, se verifica las imagenes que se recortaron y si efectivamente se detecto
