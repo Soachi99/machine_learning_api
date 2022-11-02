@@ -25,6 +25,8 @@ def uploader():
     if request.method == "POST":
 
         id_client = request.form.get('id')
+        document = request.form.get('side')
+        logging.warning(document);
         savephoto()
         data_hist = checkHistogram()
 
@@ -36,7 +38,7 @@ def uploader():
                     Data = OCR_cedula.scan(id_client)
                     if Data["success"] == False:
                         Data = {
-                            "success": False, "mensaje": "Error en el reconocimiento de caracteres, la imagen está muy borrosa o de difícil lectura"}
+                            "success": False, "mensaje": "No se puede procesar la cédula correctamente, tome la foto de nuevo"}
                         logging.warning("Imagen borrosa o de dificil lectura")
                     else:
                         aux_data = Data
@@ -70,9 +72,32 @@ def uploader():
                             print("No existe imagen")
 
                 if isFront == False and isBack == False:
-                    Data = {"success": False,
-                            "mensaje": "No se detectó una cédula en la imagen"}
-                    logging.warning("No se detectó cédula")
+                    
+                    try:
+                        Data = OCR_cedula.secondScan(document)
+
+                        if Data["success"] == False:
+                            Data = {
+                                "success": False, "mensaje": "No se puede procesar la cédula correctamente, tome la foto de nuevo"}
+                            logging.warning("Imagen borrosa o de dificil lectura")
+                        else:
+                            aux_data = Data
+                            logging.warning(f"id:{id_client}, {aux_data}")
+                            image_64 = images_64_encode_second()
+                            if image_64 != None and document == 'frontal':
+                                Data["Imagen Cedula Frontal"] = str(
+                                    image_64)
+
+                            if image_64 != None and document == 'reverse':
+                                Data["Imagen Cedula Posterior"] = str(
+                                    image_64)
+                                Data["Imagen Codigo"] = str(
+                                    image_64)
+                           
+                    except:
+                        Data = {"success": False,
+                                "mensaje": "No se puede procesar la cédula correctamente, tome la foto de nuevo"}
+                        logging.warning("No se detectó cédula en la imagen")
 
                 return jsonify(Data)
             except:
@@ -187,6 +212,16 @@ def images_64_encode(id_client):
 
     return image_64_front, image_64_back, image_64_code
 
+def images_64_encode_second():
+    image_64 = None
+
+    files = os.listdir(save_path)
+
+    if "Front.jpg" in files:
+        with open(save_path + f'/Front.jpg', "rb") as image:
+            image_64 = base64.b64encode(image.read())   
+
+    return image_64
 
 if __name__ == '__main__':
     app.run(debug=False, host="0.0.0.0", port=4000)

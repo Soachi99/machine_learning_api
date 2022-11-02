@@ -301,3 +301,67 @@ def scan(id_client):
         }
 
     return Data
+
+def secondScan(side):
+    # Inicializamos dos variables bool para poder retornar los datos según 
+    # la posición de la cedula que se envió 
+    isFront = False
+    isBack = False
+
+    # Ruta donde se alamcenan las imagenes
+    data_path = "./static"
+
+    # Entramos a la ruta y realizamos el OCR de las imagenes correspondientes
+    # luego de la detección de la parte frontal y posterior de la cedula           
+    for file_name in os.listdir(data_path):
+
+        # Si el nombre de la imagen es "cedula_frontal_prueba.jpg"m se realiza 
+        # el OCR de la imagen según las funciones para organizar datos 
+        # en la parte delantera
+        if file_name == f"Front.jpg" and side == "frontal":
+            # Contenido de la imagen (Se debe enviar así al OCR de Google Visión)
+            with io.open(os.path.join(data_path, file_name), "rb") as image_file:
+                content = image_file.read()
+            image = vision.Image(content=content)
+            result_front = OCR_front(image)
+            if result_front == False:
+                isFront = False
+            else:
+                isFront = True
+        
+        # Si el nombre de la imagen es "cedula_posterior_prueba.jpg"m se realiza 
+        # el OCR de la imagen según las funciones para organizar datos 
+        # en la parte trasera
+        if file_name == f"Front.jpg" and side == "reverse":
+                # Contenido de la imagen (Se debe enviar así al OCR de Google Visión)
+            with io.open(os.path.join(data_path, file_name), "rb") as image_file:
+                content = image_file.read()
+            image = vision.Image(content=content)
+            result_back = OCR_back(image)
+            if result_back == False:
+                isBack = False
+            else:
+                isBack = True
+                    
+    if isFront == True and isBack == False:
+        Data = {
+            "Datos Cedula Parte Frontal": result_front,
+            "success": True,           
+        }
+    if isFront == False and isBack == True:        
+        Data = {            
+            "Datos Cedula Parte Posterior": result_back,
+            "success": True, 
+        }
+    if isFront == True and isBack == True: 
+        Data = {
+            "Datos Cedula Parte Frontal": result_front,
+            "Datos Cedula Parte Posterior": result_back,
+            "success": True, 
+        }
+    if isFront == False and isBack == False:
+        Data = {            
+            "success": False,
+        }
+
+    return Data
