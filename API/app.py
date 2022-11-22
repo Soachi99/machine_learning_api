@@ -33,12 +33,13 @@ def uploader():
         if data_hist['success'] == True:
             try:
                 isFront, isBack = CedulaDetection.detect(id_client)
+                
                 if isFront != False or isBack != False:
-
+                    
                     Data = OCR_cedula.scan(id_client)
                     if Data["success"] == False:
                         Data = {
-                            "success": False, "mensaje": "No se puede procesar la cédula correctamente, tome la foto de nuevo"}
+                            "success": False, "mensaje": "No se puede validar la cédula correctamente, tome la foto de nuevo"}
                         logging.warning("Imagen borrosa o de dificil lectura")
                     else:
                         aux_data = Data
@@ -78,7 +79,7 @@ def uploader():
 
                         if Data["success"] == False:
                             Data = {
-                                "success": False, "mensaje": "No se puede procesar la cédula correctamente, tome la foto de nuevo"}
+                                "success": False, "mensaje": "No se puede validar la cédula correctamente, tome la foto de nuevo"}
                             logging.warning("Imagen borrosa o de dificil lectura")
                         else:
                             aux_data = Data
@@ -96,13 +97,13 @@ def uploader():
                            
                     except:
                         Data = {"success": False,
-                                "mensaje": "No se puede procesar la cédula correctamente, tome la foto de nuevo"}
+                                "mensaje": "No se puede validar la cédula correctamente, tome la foto de nuevo"}
                         logging.warning("No se detectó cédula en la imagen")
 
                 return jsonify(Data)
             except:
                 Data = {
-                    "success": False, "mensaje": "No se puede procesar la cédula correctamente, tome la foto de nuevo"}
+                    "success": False, "mensaje": "No se puede validar la cédula correctamente, tome la foto de nuevo"}
                 logging.warning("No se puede procesar la cédula correctamente")
                 return jsonify(Data)
 

@@ -11,27 +11,27 @@ client = vision.ImageAnnotatorClient()
 def orderDataFront(Data):
     # Inicialización de un diccionario para organizar los datos
     orderData = {}
-    orderData["Apellidos"] = None
-    orderData["Nombres"] = None
+    # orderData["Apellidos"] = None
+    # orderData["Nombres"] = None
     orderData["Numero de Cedula"] = None
 
     # Inicialización de variables que almacenaran la posición de patrones en la información
     # que nos ayudan para poder organizar los datos
-    pos_name = None     
+    # pos_name = None     
     pos_num = None 
-    pos_lastname = None  
+    # pos_lastname = None  
 
     # Lista de palabras que se deben filtrar en los datos extraidos
-    words_to_filter = ["Rep","Co","Icade","Abia","Ica","Mr","Om","Olbn","De","Sa","Mero",
-        "Número","Numero","Numro","Numer","Republica De","Colomba","Ica D","Ica De","Mbia","Repu",
-        "Republica","Republica De Colombia","Colombiay","Colonema","Bedublic T", "Rnpablicade",
-        "Republ", "Coll", "Rlica", "Numeho", "Dos", '', "Colombia", "Eribica", "Coloa", "Codo", "Republic De",
-        "Colo", "Firma", "Colon", "Public", "Olom", "Ombia", "Epublica De", "Epublica", "Nublica", "Olonb", 
-        "Coldabia", "Acional", "Nacional", "Auca De Da", "Republica Ce", "Mb", "Rnpablicad", "Ta", "Olo", 
-        "Olo K", "Republicade", "Colgmbia", "Col", "C Rublica De", "Cobombia", "Colombla", "Replblica De",
-        "Lica De", "Repubee", "Repubea", "Repilicad", "Colombl", "Hacional", "Repueli", "Colommen", "Colomgia",
-        "Epublica De Colma", "Replibu", "Re", "Sia", "Rublic", "Pepublic", "Coloeia", "Nůmero"
-    ]
+    # words_to_filter = ["Rep","Co","Icade","Abia","Ica","Mr","Om","Olbn","De","Sa","Mero",
+    #     "Número","Numero","Numro","Numer","Republica De","Colomba","Ica D","Ica De","Mbia","Repu",
+    #     "Republica","Republica De Colombia","Colombiay","Colonema","Bedublic T", "Rnpablicade",
+    #     "Republ", "Coll", "Rlica", "Numeho", "Dos", '', "Colombia", "Eribica", "Coloa", "Codo", "Republic De",
+    #     "Colo", "Firma", "Colon", "Public", "Olom", "Ombia", "Epublica De", "Epublica", "Nublica", "Olonb", 
+    #     "Coldabia", "Acional", "Nacional", "Auca De Da", "Republica Ce", "Mb", "Rnpablicad", "Ta", "Olo", 
+    #     "Olo K", "Republicade", "Colgmbia", "Col", "C Rublica De", "Cobombia", "Colombla", "Replblica De",
+    #     "Lica De", "Repubee", "Repubea", "Repilicad", "Colombl", "Hacional", "Repueli", "Colommen", "Colomgia",
+    #     "Epublica De Colma", "Replibu", "Re", "Sia", "Rublic", "Pepublic", "Coloeia", "Nůmero"
+    # ]
 
     ## Busca el numero de la cedula en los datos y quita los puntos
     for i in range(len(Data)):
@@ -42,91 +42,87 @@ def orderDataFront(Data):
             break
 
     ## Posición de la palabra "Nombre" en la cedula.
-    for i in range(len(Data)):
-        if (
-            "br" in Data[i]            
-            or Data[i] == "Nomares" 
-            or Data[i] == "Nombhes"
-        ):
-            pos_name = i
-            break
+    # for i in range(len(Data)):
+    #     if (
+    #         "br" in Data[i]            
+    #         or Data[i] == "Nomares" 
+    #         or Data[i] == "Nombhes"
+    #     ):
+    #         pos_name = i
+    #         break
     
 
     ## Si lee un numero y un nombre, realiza la operación de lectura y orden.
-    if pos_name != None and pos_num != None:    
-        # Corta los datos desde la posici´pm del numero de cedula hasta la posición del nombre     
-        new_data = Data[pos_num + 1 : pos_name]
+    # if pos_name != None and pos_num != None:    
+    #     # Corta los datos desde la posici´pm del numero de cedula hasta la posición del nombre     
+    #     new_data = Data[pos_num + 1 : pos_name]
         
-        # Proceso de filtro de palabras no deseadas o basura
-        for word in words_to_filter:
-            try:
-                new_data.remove(word)
-            except:
-                continue
+    #     # Proceso de filtro de palabras no deseadas o basura
+    #     for word in words_to_filter:
+    #         try:
+    #             new_data.remove(word)
+    #         except:
+    #             continue
 
-        # Determina la posición de la palabra "apellido" en los datos 
-        for i in range(len(new_data)):
-            if (
-                "Apel" in new_data[i]    
-                or "apel" in Data[i]        
-                or new_data[i] == "Apellidos"             
-            ):
-                pos_lastname = i
-                break
+    #     # Determina la posición de la palabra "apellido" en los datos 
+    #     for i in range(len(new_data)):
+    #         if (
+    #             "Apel" in new_data[i]    
+    #             or "apel" in Data[i]        
+    #             or new_data[i] == "Apellidos"             
+    #         ):
+    #             pos_lastname = i
+    #             break
 
         # Según los cortes y filtros realizados, el apellido siempre quedara como primera posición
         # y el nombre luego de la plabra apellido, o en su defecto al final de la lista de datos
-        if(len(new_data)>0):
-            orderData["Apellidos"] = new_data[0]
-            try:
-                orderData["Nombres"] = new_data[pos_lastname + 1]
-            except:
-                orderData["Nombres"] = new_data[-1]
-        else:
-            return False
+        # if(len(new_data)>0):
+        #     orderData["Apellidos"] = new_data[0]
+        #     try:
+        #         orderData["Nombres"] = new_data[pos_lastname + 1]
+        #     except:
+        #         orderData["Nombres"] = new_data[-1]
+        # else:
+        #     return False
 
     ## Si determina la posición del numero, pero no la posición del nombre, realiza la operación de lectura y orden por la posición del apellido.
-    if pos_num != None and pos_name == None:
-        # Determina la posición de la palabra "apellido" en los datos 
-        for i in range(len(Data)):
-            if (
-                "Apel" in Data[i] 
-                or "apel" in Data[i]         
-                or Data[i] == "Apellidos"                            
-            ):
-                pos_lastname = i
-                break
+    # if pos_num != None and pos_name == None:
+    #     # Determina la posición de la palabra "apellido" en los datos 
+    #     for i in range(len(Data)):
+    #         if (
+    #             "Apel" in Data[i] 
+    #             or "apel" in Data[i]         
+    #             or Data[i] == "Apellidos"                            
+    #         ):
+    #             pos_lastname = i
+    #             break
         
-        # Intenta cortar los datos si encontro la palabra apellido en los datos
-        try:
-            new_data = Data[pos_num +1 : pos_lastname+2]  
-        except:
-            new_data = Data[pos_num +1 :]
+    #     # Intenta cortar los datos si encontro la palabra apellido en los datos
+    #     try:
+    #         new_data = Data[pos_num +1 : pos_lastname+2]  
+    #     except:
+    #         new_data = Data[pos_num +1 :]
         
-        # Proceso de filtro de palabras no deseadas o basura
-        for word in words_to_filter:
-            try:
-                new_data.remove(word)
-            except:
-                continue
-        # Según los cortes y filtros realizados, el apellido siempre quedara como primera posición
-        # y el nombre al final de la lista de datos
-        if(len(new_data)>0):
-            orderData["Apellidos"] = new_data[0]
-            orderData["Nombres"] = new_data[-1]
-        else:
-            return False
+    #     # Proceso de filtro de palabras no deseadas o basura
+    #     for word in words_to_filter:
+    #         try:
+    #             new_data.remove(word)
+    #         except:
+    #             continue
+    #     # Según los cortes y filtros realizados, el apellido siempre quedara como primera posición
+    #     # y el nombre al final de la lista de datos
+    #     if(len(new_data)>0):
+    #         orderData["Apellidos"] = new_data[0]
+    #         orderData["Nombres"] = new_data[-1]
+    #     else:
+    #         return False
 
     ## Retorna un False si no hayo en la cedula el numero o un nombre.
-    if pos_num == None and pos_name == None:
+    if pos_num == None:
         return False;
 
     ## Retorna un False si no hizo la lectura de los datos.
-    if (
-        orderData["Apellidos"] == None 
-        or orderData["Nombres"] == None 
-        or orderData["Numero de Cedula"] == None
-    ):
+    if (orderData["Numero de Cedula"] == None):
         return False;
     
     # Retorna los datos organizados
@@ -268,16 +264,8 @@ def scan(id_client):
         # Si el nombre de la imagen es "cedula_posterior_prueba.jpg"m se realiza 
         # el OCR de la imagen según las funciones para organizar datos 
         # en la parte trasera
-        if file_name == f"cedula_posterior_{id_client}.jpg":
-                # Contenido de la imagen (Se debe enviar así al OCR de Google Visión)
-            with io.open(os.path.join(data_path, file_name), "rb") as image_file:
-                content = image_file.read()
-            image = vision.Image(content=content)
-            result_back = OCR_back(image)
-            if result_back == False:
-                isBack = False
-            else:
-                isBack = True
+        if file_name == f"cedula_posterior_{id_client}.jpg":                            
+            isBack = True
                     
     if isFront == True and isBack == False:
         Data = {
@@ -286,13 +274,13 @@ def scan(id_client):
         }
     if isFront == False and isBack == True:        
         Data = {            
-            "Datos Cedula Parte Posterior": result_back,
+            #"Datos Cedula Parte Posterior": result_back,
             "success": True, 
         }
     if isFront == True and isBack == True: 
         Data = {
             "Datos Cedula Parte Frontal": result_front,
-            "Datos Cedula Parte Posterior": result_back,
+            #"Datos Cedula Parte Posterior": result_back,
             "success": True, 
         }
     if isFront == False and isBack == False:
@@ -333,15 +321,10 @@ def secondScan(side):
         # el OCR de la imagen según las funciones para organizar datos 
         # en la parte trasera
         if file_name == f"Front.jpg" and side == "reverse":
-                # Contenido de la imagen (Se debe enviar así al OCR de Google Visión)
-            with io.open(os.path.join(data_path, file_name), "rb") as image_file:
-                content = image_file.read()
-            image = vision.Image(content=content)
-            result_back = OCR_back(image)
-            if result_back == False:
-                isBack = False
-            else:
-                isBack = True
+                # Contenido de la imagen (Se debe enviar así al OCR de Google Visión)          
+            
+            isBack = False
+            
                     
     if isFront == True and isBack == False:
         Data = {
@@ -350,13 +333,13 @@ def secondScan(side):
         }
     if isFront == False and isBack == True:        
         Data = {            
-            "Datos Cedula Parte Posterior": result_back,
+            #"Datos Cedula Parte Posterior": result_back,
             "success": True, 
         }
     if isFront == True and isBack == True: 
         Data = {
             "Datos Cedula Parte Frontal": result_front,
-            "Datos Cedula Parte Posterior": result_back,
+            #"Datos Cedula Parte Posterior": result_back,
             "success": True, 
         }
     if isFront == False and isBack == False:

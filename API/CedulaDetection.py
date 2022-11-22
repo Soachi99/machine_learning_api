@@ -105,36 +105,37 @@ def run_odt_and_draw_results(image_path, interpreter, id_client, threshold=0.5):
 
         class_id = int(obj['class_id']) + 1
 
-        classes_detected.append(class_id)
+        classes_detected.append(class_id)        
 
-        # Clases detectadas, si detecto en la imagen la clase 4 (CEDULA)
-        if 2 in classes_detected:
+         # Recorte de cada clase en la imagen y almacenamiento
+        # Clases detectadas, si detecto en la imagen la clase 5 (CEDULA)
+        if 5 in classes_detected:
             Front_detected = True
             save_detection(image_path, class_id, xmin,
                            xmax, ymin, ymax, id_client)
-        # Clases detectadas, si detecto en la imagen la clase 6 (ATRAS)
 
-        if 3 and 1 in classes_detected:
+        # Clases detectadas, si detecto en la imagen la clase 4 (ATRAS)
+        if 4 or 2 in classes_detected:
             Back_detected = True
             save_detection(image_path, class_id, xmin,
                            xmax, ymin, ymax, id_client)
 
-        # Recorte de cada clase en la imagen y almacenamiento
+       
 
     ############################# MUESTRA EN LA IMAGEN LOS OBJETOS DETECTADOS #################################
 
-    #   color = [int(c) for c in COLORS[class_id]]
-    #   cv2.rectangle(original_image_np, (xmin, ymin), (xmax, ymax), color, 2)
+        # color = [int(c) for c in COLORS[class_id]]
+        # cv2.rectangle(original_image_np, (xmin, ymin), (xmax, ymax), color, 2)
 
-    #   y = ymin - 15 if ymin - 15 > 15 else ymin + 15
-    #   label = "{}: {:.0f}%".format(classes[class_id], obj['score'] * 100)
-    #   cv2.putText(original_image_np, label, (xmin, y),
-    #       cv2.FONT_HERSHEY_SIMPLEX, 0.5, color, 2)
+        # y = ymin - 15 if ymin - 15 > 15 else ymin + 15
+        # label = "{}: {:.0f}%".format(classes[class_id], obj['score'] * 100)
+        # cv2.putText(original_image_np, label, (xmin, y),
+        #     cv2.FONT_HERSHEY_SIMPLEX, 0.5, color, 2)
 
-    # cv2.imshow("results", original_image_np)
+        # cv2.imshow("results", original_image_np)
 
-    # cv2.waitKey(0)
-    # cv2.destroyAllWindows()
+        # cv2.waitKey(0)
+        # cv2.destroyAllWindows()
 
     return Front_detected, Back_detected
 
@@ -190,7 +191,7 @@ def detect(id_client):
                 input_image,
                 interpreter,
                 id_client,
-                threshold=0.05
+                threshold=0.3              
             )
 
     # Luego del proceso de detección, se verifica las imagenes que se recortaron y si efectivamente se detecto
