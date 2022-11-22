@@ -146,7 +146,7 @@ def checkHistogram():
 
     count_underExpose = 0
     for i in range(len(underExposer)):
-        if underExposer[i] >= 20000:
+        if underExposer[i] >= 35000:
             count_underExpose += 1
 
     if count_underExpose >= 10:
