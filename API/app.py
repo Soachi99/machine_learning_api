@@ -146,10 +146,10 @@ def checkHistogram():
 
     count_underExpose = 0
     for i in range(len(underExposer)):
-        if underExposer[i] >= 60000:
+        if underExposer[i] >= 100000:
             count_underExpose += 1
 
-    if count_underExpose >= 10:
+    if count_underExpose >= 20:
         logging.warning(
             "La imagen cuenta con poca iluminación, sitúese en un sitio más iluminado para tomar la foto")
         data["mensaje"] = "La imagen cuenta con poca iluminación, sitúese en un sitio más iluminado para tomar la foto"
@@ -157,7 +157,7 @@ def checkHistogram():
 
     count_overExpose = 0
     for i in range(len(overExposer)):
-        if overExposer[i] >= 20000:
+        if overExposer[i] >= 30000:
             count_overExpose += 1
 
     if count_overExpose >= 15:
