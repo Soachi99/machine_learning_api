@@ -115,12 +115,12 @@ def checkEyesOpen(id_client):
         data["mensaje"] = "Toma la foto de nuevo, no se detectaron los ojos de la persona correctamente"
         data["success"] = False
 
-    for (ex, ey, ew, eh) in eyes:
-        cv2.rectangle(selfie, (ex, ey), (ex+ew, ey+eh), (0, 255, 255), 2)
+    # for (ex, ey, ew, eh) in eyes:
+    #     cv2.rectangle(selfie, (ex, ey), (ex+ew, ey+eh), (0, 255, 255), 2)
 
-    cv2.imshow('Eyes Detection', selfie)
-    cv2.waitKey(0)
-    cv2.destroyAllWindows()
+    # cv2.imshow('Eyes Detection', selfie)
+    # cv2.waitKey(0)
+    # cv2.destroyAllWindows()
     return data
 
 
