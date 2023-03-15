@@ -105,9 +105,9 @@ def run_odt_and_draw_results(image_path, interpreter, id_client, threshold=0.5):
 
         class_id = int(obj['class_id']) + 1
 
-        classes_detected.append(class_id)        
+        classes_detected.append(class_id)
 
-         # Recorte de cada clase en la imagen y almacenamiento
+        # Recorte de cada clase en la imagen y almacenamiento
         # Clases detectadas, si detecto en la imagen la clase 5 (CEDULA)
         if 5 in classes_detected:
             Front_detected = True
@@ -119,8 +119,6 @@ def run_odt_and_draw_results(image_path, interpreter, id_client, threshold=0.5):
             Back_detected = True
             save_detection(image_path, class_id, xmin,
                            xmax, ymin, ymax, id_client)
-
-       
 
     ############################# MUESTRA EN LA IMAGEN LOS OBJETOS DETECTADOS #################################
 
@@ -155,7 +153,7 @@ def save_detection(image_path, class_id, xmin, xmax, ymin, ymax, id_client):
         code = cv2.detailEnhance(code, sigma_s=25, sigma_r=0.8)
         cv2.imwrite(save_path + f'/codigo_{id_client}.jpg', code)
 
-    if(classes[class_id] == "CEDULA"):
+    if (classes[class_id] == "CEDULA"):
         try:
             front = aux_image[ymin-25:ymax+25, xmin-20:xmax+20]
         except:
@@ -191,7 +189,7 @@ def detect(id_client):
                 input_image,
                 interpreter,
                 id_client,
-                threshold=0.3              
+                threshold=0.3
             )
 
     # Luego del proceso de detección, se verifica las imagenes que se recortaron y si efectivamente se detecto

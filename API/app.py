@@ -2,7 +2,6 @@ import os
 import io
 from flask import Flask, jsonify, render_template, request
 from flask_cors import CORS
-import OCR_cedula
 import CedulaDetection
 import base64
 import logging
@@ -26,33 +25,28 @@ def uploader():
 
         id_client = request.form.get('id')
         document = request.form.get('side')
-        logging.warning(document);
+        logging.warning(document)
         savephoto()
         data_hist = checkHistogram()
+        Data = {}
 
         if data_hist['success'] == True:
             try:
                 isFront, isBack = CedulaDetection.detect(id_client)
-                
+
                 if isFront != False or isBack != False:
-                    
-                    Data = OCR_cedula.scan(id_client)
-                    if Data["success"] == False:
-                        Data = {
-                            "success": False, "mensaje": "No se puede validar la cédula correctamente, tome la foto de nuevo"}
-                        logging.warning("Imagen borrosa o de dificil lectura")
-                    else:
-                        aux_data = Data
-                        logging.warning(f"id:{id_client}, {aux_data}")
-                        image_64_front, image_64_back, image_64_code = images_64_encode(
-                            id_client)
-                        if image_64_back != None:
-                            Data["Imagen Cedula Posterior"] = str(
-                                image_64_back)
-                        if image_64_front != None:
-                            Data["Imagen Cedula Frontal"] = str(image_64_front)
-                        if image_64_code != None:
-                            Data["Imagen Codigo"] = str(image_64_code)
+
+                    Data["success"] = True
+
+                    # image_64_front, image_64_back, image_64_code = images_64_encode(
+                    #     id_client)
+                    # if image_64_back != None:
+                    #     Data["Imagen Cedula Posterior"] = str(
+                    #         image_64_back)
+                    # if image_64_front != None:
+                    #     Data["Imagen Cedula Frontal"] = str(image_64_front)
+                    # if image_64_code != None:
+                    #     Data["Imagen Codigo"] = str(image_64_code)
 
                     if isFront == True and isBack == True:
                         try:
@@ -72,34 +66,6 @@ def uploader():
                         except:
                             print("No existe imagen")
 
-                if isFront == False and isBack == False:
-                    
-                    try:
-                        Data = OCR_cedula.secondScan(document)
-
-                        if Data["success"] == False:
-                            Data = {
-                                "success": False, "mensaje": "No se puede validar la cédula correctamente, tome la foto de nuevo"}
-                            logging.warning("Imagen borrosa o de dificil lectura")
-                        else:
-                            aux_data = Data
-                            logging.warning(f"id:{id_client}, {aux_data}")
-                            image_64 = images_64_encode_second()
-                            if image_64 != None and document == 'frontal':
-                                Data["Imagen Cedula Frontal"] = str(
-                                    image_64)
-
-                            if image_64 != None and document == 'reverse':
-                                Data["Imagen Cedula Posterior"] = str(
-                                    image_64)
-                                Data["Imagen Codigo"] = str(
-                                    image_64)
-                           
-                    except:
-                        Data = {"success": False,
-                                "mensaje": "No se puede validar la cédula correctamente, tome la foto de nuevo"}
-                        logging.warning("No se detectó cédula en la imagen")
-
                 return jsonify(Data)
             except:
                 Data = {
@@ -113,32 +79,55 @@ def uploader():
 
 @app.route('/checkselfie', methods=['POST'])
 def checkphoto():
-    savephoto()
-    data = checkHistogram()
+    id_client = request.form.get('id')
+    savephotoselfie()
+    data = checkHistogram(id_client)
 
     if data["success"] == True:
-        selfie = cv2.imread(save_path + "/Front.jpg")
-        h, w, c = selfie.shape
-        aux_selfie = selfie[200:h-170, 40:w-40]
-        aux_selfie = cv2.detailEnhance(aux_selfie, sigma_s=2, sigma_r=0.10)
-        cv2.imwrite(save_path + '/selfie.jpg', aux_selfie)
-
-        with open(save_path + '/selfie.jpg', "rb") as image_selfie:
-            image_64_selfie = base64.b64encode(image_selfie.read())
-            data["selfie"] = str(image_64_selfie)
-
+        data = {}
+        data = checkEyesOpen(id_client)
         try:
-            os.remove(save_path + '/selfie.jpg')
+            os.remove(save_path + f'/Selfie_{id_client}.jpg')
         except:
             print("No existe imagen")
 
     return jsonify(data)
 
 
-def checkHistogram():
+def checkEyesOpen(id_client):
+    data = {}
+    selfie = cv2.imread(save_path + f"/Selfie_{id_client}.jpg")
+
+    eye_cascade = cv2.CascadeClassifier(
+        cv2.data.haarcascades + 'haarcascade_eye_tree_eyeglasses.xml')
+
+    eyes = eye_cascade.detectMultiScale(
+        selfie, scaleFactor=1.1, minNeighbors=5, minSize=(30, 30))
+
+    if (len(eyes) >= 2):
+        logging.warning(
+            "Ojos detectados correctamente")
+        data["success"] = True
+
+    else:
+        logging.warning(
+            "Ojos cerrados o no se detecta ojos en la foto")
+        data["mensaje"] = "Toma la foto de nuevo, no se detectaron los ojos de la persona correctamente"
+        data["success"] = False
+
+    for (ex, ey, ew, eh) in eyes:
+        cv2.rectangle(selfie, (ex, ey), (ex+ew, ey+eh), (0, 255, 255), 2)
+
+    cv2.imshow('Eyes Detection', selfie)
+    cv2.waitKey(0)
+    cv2.destroyAllWindows()
+    return data
+
+
+def checkHistogram(id_client):
     data = {}
 
-    img_check = cv2.imread(save_path + "/Front.jpg", 0)
+    img_check = cv2.imread(save_path + f"/Selfie_{id_client}.jpg", 0)
     hist = cv2.calcHist([img_check], [0], None, [256], [0, 256])
 
     underExposer = hist[0:25]
@@ -192,6 +181,18 @@ def savephoto():
         count += 1
 
 
+def savephotoselfie():
+    id_client = request.form.get('id')
+    if not os.path.exists(save_path):
+        os.makedirs(save_path)
+
+    files = request.files.getlist("files[]")
+    for file in files:
+        file.filename = f"Selfie_{id_client}.jpg"
+
+    file.save(os.path.join(app.config['UPLOAD_FOLDER'], file.filename))
+
+
 def images_64_encode(id_client):
     image_64_front = None
     image_64_back = None
@@ -213,16 +214,6 @@ def images_64_encode(id_client):
 
     return image_64_front, image_64_back, image_64_code
 
-def images_64_encode_second():
-    image_64 = None
-
-    files = os.listdir(save_path)
-
-    if "Front.jpg" in files:
-        with open(save_path + f'/Front.jpg', "rb") as image:
-            image_64 = base64.b64encode(image.read())   
-
-    return image_64
 
 if __name__ == '__main__':
     app.run(debug=False, host="0.0.0.0", port=4000)
