@@ -98,21 +98,34 @@ def checkEyesOpen(id_client):
     data = {}
     selfie = cv2.imread(save_path + f"/Selfie_{id_client}.jpg")
 
+    face_cascade = cv2.CascadeClassifier(
+        cv2.data.haarcascades + 'haarcascade_frontalface_alt.xml')
+
     eye_cascade = cv2.CascadeClassifier(
         cv2.data.haarcascades + 'haarcascade_eye_tree_eyeglasses.xml')
 
-    eyes = eye_cascade.detectMultiScale(
+    face = face_cascade.detectMultiScale(
         selfie, scaleFactor=1.1, minNeighbors=5, minSize=(30, 30))
 
-    if (len(eyes) >= 2):
-        logging.warning(
-            "Ojos detectados correctamente")
-        data["success"] = True
+    if len(face) > 0:
+        eyes = eye_cascade.detectMultiScale(
+            selfie, scaleFactor=1.1, minNeighbors=5, minSize=(35, 35))
+
+        if (len(eyes) >= 2):
+            logging.warning(
+                "Ojos detectados correctamente")
+            data["success"] = True
+
+        else:
+            logging.warning(
+                "Ojos cerrados o no se detecta ojos en la foto")
+            data["mensaje"] = "Tus ojos no están abiertos en la foto, intenta nuevamente."
+            data["success"] = False
 
     else:
         logging.warning(
-            "Ojos cerrados o no se detecta ojos en la foto")
-        data["mensaje"] = "Toma la foto de nuevo, no se detectaron los ojos de la persona correctamente"
+            "No se detecto rostro")
+        data["mensaje"] = "No se detecta el rostro de la persona, intenta nuevamente."
         data["success"] = False
 
     # for (ex, ey, ew, eh) in eyes:
