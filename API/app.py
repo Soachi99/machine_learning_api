@@ -6,6 +6,9 @@ import CedulaDetection
 import base64
 import logging
 import cv2
+import numpy as np
+import base64
+
 
 save_path = 'static'
 app = Flask(__name__)
@@ -18,6 +21,32 @@ CORS(app, resources={r"*": {"origins": "*"}})
 def upload_files():
     return render_template('form.html')
 
+@app.route('/enhance', methods=['POST'])
+def enhance():
+    response = {}
+    data = request.json;
+    selfie = data.get('selfie');
+
+    header, data_selfie = selfie.split(',', 1)
+
+    image_data = base64.b64decode(data_selfie)
+
+
+    np_array = np.frombuffer(image_data, np.uint8)
+    im=cv2.imdecode(np_array, cv2.IMREAD_UNCHANGED)
+    #cv2.imshow("original", im)
+
+    im_enhance = cv2.detailEnhance(im, sigma_s=6, sigma_r=0.4)
+
+    #cv2.imshow("result", im_enhance)
+
+    retval, buffer = cv2.imencode('.jpg', im_enhance)
+    jpg_as_text = base64.b64encode(buffer)
+   
+    #concatenar data:image/jpeg;base64,
+    response = {"image": str(jpg_as_text)}
+   
+    return jsonify(response)
 
 @app.route('/uploader', methods=['POST'])
 def uploader():
