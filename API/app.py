@@ -8,7 +8,7 @@ import logging
 import cv2
 import numpy as np
 import base64
-
+from qreader import QReader
 
 save_path = 'static'
 app = Flask(__name__)
@@ -122,6 +122,50 @@ def checkphoto():
 
     return jsonify(data)
 
+@app.route('/readqr', methods=['POST'])
+def readqr():
+    response = {}
+    data = request.json;
+    image = data.get('image');
+
+    header, data_image = image.split(',', 1)
+
+    image_data = base64.b64decode(data_image)   
+
+    np_array = np.frombuffer(image_data, np.uint8)
+    im=cv2.imdecode(np_array, cv2.IMREAD_UNCHANGED)    
+
+    original = im.copy()     
+    
+    qreader = QReader()
+    
+    try:
+        decode_info = qreader.detect_and_decode(image= original)    
+        
+        if(decode_info[0] != None):
+            response["error"] = False
+            response["decode"] = decode_info[0]
+            response["message"] = "Éxito"
+        else:
+            raise Exception("Sin información")
+    except:
+        response["error"] = True
+        response["decode"] = ""
+        response["message"] = "No se pudo leer el QR, intenta de nuevo"
+
+
+    return jsonify(response)
+
+# def replaceEspecialCharacters(str):
+#     characters = (
+#         ("ﾁ", "A"),
+#         ("ﾑ", "Ñ")
+#     )
+
+#     for character, replace in characters:
+#         str_replaced = str.replace(character, replace)
+
+#     return str_replaced
 
 def checkEyesOpen(id_client):
     data = {}
