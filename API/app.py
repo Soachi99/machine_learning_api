@@ -137,14 +137,15 @@ def readqr():
 
     original = im.copy()     
     
-    qreader = QReader()
+    qreader = QReader(model_size='l', reencode_to= 'utf-8')
     
     try:
         decode_info = qreader.detect_and_decode(image= original)    
         
         if(decode_info[0] != None):
+            #print(decode_info[0])
             response["error"] = False
-            response["decode"] = decode_info[0]
+            response["decode"] = replaceEspecialCharacters(decode_info[0])
             response["message"] = "Éxito"
         else:
             raise Exception("Sin información")
@@ -156,16 +157,21 @@ def readqr():
 
     return jsonify(response)
 
-# def replaceEspecialCharacters(str):
-#     characters = (
-#         ("ﾁ", "A"),
-#         ("ﾑ", "Ñ")
-#     )
+## PANAMEAÑ
 
-#     for character, replace in characters:
-#         str_replaced = str.replace(character, replace)
+def replaceEspecialCharacters(text):
+    replacements_dict = {
+    'ﾍ': 'Í',
+    'ﾓ': 'Ó',
+    'ﾑ': 'Ñ',      
+    'ﾃ': 'Á',   
+    'ﾁ': 'Á',
+    '羨': 'Ñ'
+    }
 
-#     return str_replaced
+    text = text.translate(str.maketrans(replacements_dict))
+
+    return text.replace('ÁÑ', 'ÑA')
 
 def checkEyesOpen(id_client):
     data = {}
