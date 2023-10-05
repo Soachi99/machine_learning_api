@@ -143,7 +143,7 @@ def readqr():
         decode_info = qreader.detect_and_decode(image= original)    
         
         if(decode_info[0] != None):
-            #print(decode_info[0])
+            print(decode_info[0])
             response["error"] = False
             response["decode"] = replaceEspecialCharacters(decode_info[0])
             response["message"] = "Éxito"
@@ -166,7 +166,8 @@ def replaceEspecialCharacters(text):
     'ﾑ': 'Ñ',      
     'ﾃ': 'Á',   
     'ﾁ': 'Á',
-    '羨': 'Ñ'
+    '羨': 'Ñ',
+    '−': '|'
     }
 
     text = text.translate(str.maketrans(replacements_dict))
