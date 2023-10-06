@@ -137,7 +137,7 @@ def readqr():
 
     original = im.copy()     
     
-    qreader = QReader(model_size='l', reencode_to= 'utf-8')
+    qreader = QReader(model_size='l')
     
     try:
         decode_info = qreader.detect_and_decode(image= original)    
@@ -145,8 +145,8 @@ def readqr():
         if(decode_info[0] != None):
             print(decode_info[0])
             response["error"] = False
-            response["decode"] = replaceEspecialCharacters(decode_info[0])
-            response["message"] = "Éxito"
+            response["decode"] = replaceEspecialCharacters(decode_info[0]).encode('utf-8').decode('unicode_escape')
+            response["message"] = "Exito"
         else:
             raise Exception("Sin información")
     except:
@@ -154,8 +154,8 @@ def readqr():
         response["decode"] = ""
         response["message"] = "No se pudo leer el QR, intenta de nuevo"
 
-
-    return jsonify(response)
+    
+    return response
 
 ## PANAMEAÑ
 
