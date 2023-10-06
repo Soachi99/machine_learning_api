@@ -171,7 +171,9 @@ def replaceEspecialCharacters(text):
     'ﾃ': 'A',   
     'ﾁ': 'A',
     '羨': 'Ñ',
-    '−': '|'
+    '−': '|',
+    '舉': 'A|',
+    '哻': 'NA'
     }
 
     text = text.translate(str.maketrans(replacements_dict))
