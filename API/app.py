@@ -161,18 +161,18 @@ def readqr():
 
 def replaceEspecialCharacters(text):
     replacements_dict = {
-    'ﾍ': 'Í',
-    'ﾓ': 'Ó',
+    'ﾍ': 'I',
+    'ﾓ': 'O',
     'ﾑ': 'Ñ',      
-    'ﾃ': 'Á',   
-    'ﾁ': 'Á',
+    'ﾃ': 'A',   
+    'ﾁ': 'A',
     '羨': 'Ñ',
     '−': '|'
     }
 
     text = text.translate(str.maketrans(replacements_dict))
 
-    return text.replace('ÁÑ', 'ÑA')
+    return text.replace('AÑ', 'NA').replace('Ñ', 'N')
 
 def checkEyesOpen(id_client):
     data = {}
