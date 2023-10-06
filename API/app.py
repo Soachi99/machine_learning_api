@@ -9,6 +9,7 @@ import cv2
 import numpy as np
 import base64
 from qreader import QReader
+import json
 
 save_path = 'static'
 app = Flask(__name__)
@@ -137,7 +138,7 @@ def readqr():
 
     original = im.copy()     
     
-    qreader = QReader(model_size='l')
+    qreader = QReader(model_size='l', reencode_to= 'utf-8')
     
     try:
         decode_info = qreader.detect_and_decode(image= original)    
@@ -145,7 +146,7 @@ def readqr():
         if(decode_info[0] != None):
             print(decode_info[0])
             response["error"] = False
-            response["decode"] = replaceEspecialCharacters(decode_info[0]).encode('utf-8').decode('unicode_escape')
+            response["decode"] = replaceEspecialCharacters(decode_info[0])
             response["message"] = "Exito"
         else:
             raise Exception("Sin información")
@@ -154,8 +155,11 @@ def readqr():
         response["decode"] = ""
         response["message"] = "No se pudo leer el QR, intenta de nuevo"
 
+    response = json.dumps(response, ensure_ascii= False)   
+
+    response = json.loads(response)
     
-    return response
+    return jsonify(response)
 
 ## PANAMEAÑ
 
