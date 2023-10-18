@@ -173,7 +173,12 @@ def replaceEspecialCharacters(text):
     '羨': 'Ñ',
     '−': '|',
     '舉': 'A|',
-    '哻': 'NA'
+    '哻': 'NA',
+    '隳': 'o',
+    '矹': 'I|',
+    '冇': 'EN',
+    '粍': 'ON',
+    'ﾉ' : 'E'
     }
 
     text = text.translate(str.maketrans(replacements_dict))
