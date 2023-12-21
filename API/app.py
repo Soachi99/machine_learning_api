@@ -184,7 +184,8 @@ def replaceEspecialCharacters(text):
     '戉': 'E|',
     'ﾚ' : 'U',
     '琰' : 'U|',
-    '驂' : 'é|'
+    '驂' : 'é|',
+    '哲' : 'N'
     }
 
     text = text.translate(str.maketrans(replacements_dict))
